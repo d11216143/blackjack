@@ -77,6 +77,18 @@ python main.py
 python main.py 42
 ```
 
+**View demonstrations:**
+```bash
+python examples.py
+```
+
+This will show examples of:
+- Hand value calculations (soft/hard hands)
+- Player Blackjack scenario
+- Split pairs demonstration
+- Insurance scenario
+- All available player actions
+
 ### How to Play
 
 1. **Betting:** Enter your bet amount at the start of each round

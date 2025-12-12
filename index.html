@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>10點半（Ten-and-a-half）</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #1e3c72;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        details {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border: 2px solid #ddd;
+        }
+
+        summary {
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #1e3c72;
+            padding: 5px;
+        }
+
+        summary:hover {
+            color: #2a5298;
+        }
+
+        .rules-content {
+            margin-top: 15px;
+            line-height: 1.6;
+        }
+
+        .rules-content ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .rules-content li {
+            margin-bottom: 5px;
+        }
+
+        .game-area {
+            margin: 30px 0;
+        }
+
+        .player-section, .banker-section {
+            background: #f9f9f9;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .player-section {
+            border-color: #4CAF50;
+        }
+
+        .banker-section {
+            border-color: #f44336;
+        }
+
+        .section-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .player-section .section-title {
+            color: #4CAF50;
+        }
+
+        .banker-section .section-title {
+            color: #f44336;
+        }
+
+        .hand {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            min-height: 80px;
+            margin-bottom: 15px;
+        }
+
+        .card {
+            width: 60px;
+            height: 80px;
+            background: white;
+            border: 2px solid #333;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+            font-weight: bold;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .card.red {
+            color: #f44336;
+        }
+
+        .card.black {
+            color: #333;
+        }
+
+        .card .rank {
+            font-size: 1.3em;
+        }
+
+        .card .suit {
+            font-size: 1.5em;
+        }
+
+        .card.hidden {
+            background: #666;
+            color: #fff;
+            font-size: 2em;
+        }
+
+        .points {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 1.1em;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        #newGameBtn {
+            background: #2196F3;
+            color: white;
+        }
+
+        #newGameBtn:hover:not(:disabled) {
+            background: #1976D2;
+        }
+
+        #hitBtn {
+            background: #4CAF50;
+            color: white;
+        }
+
+        #hitBtn:hover:not(:disabled) {
+            background: #45a049;
+        }
+
+        #standBtn {
+            background: #FF9800;
+            color: white;
+        }
+
+        #standBtn:hover:not(:disabled) {
+            background: #F57C00;
+        }
+
+        .message-area {
+            background: #e3f2fd;
+            border: 2px solid #2196F3;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .phase {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #1976D2;
+        }
+
+        .result {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .result.win {
+            color: #4CAF50;
+        }
+
+        .result.lose {
+            color: #f44336;
+        }
+
+        .result.push {
+            color: #FF9800;
+        }
+
+        .reason {
+            font-size: 0.95em;
+            color: #666;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>10點半</h1>
+        <div class="subtitle">Ten-and-a-half</div>
+
+        <details>
+            <summary>📖 遊戲規則 (Game Rules)</summary>
+            <div class="rules-content">
+                <p><strong>目標：</strong>點數總和接近但不超過 10.5 點</p>
+                <ul>
+                    <li><strong>牌面點數：</strong>
+                        <ul>
+                            <li>A～10：等於牌面數字 (A=1, 2=2, ..., 10=10)</li>
+                            <li>J/Q/K：每張 <strong>0.5 點</strong></li>
+                        </ul>
+                    </li>
+                    <li><strong>爆牌：</strong>點數超過 10.5 立即判輸</li>
+                    <li><strong>玩家回合：</strong>可選擇「要牌」(Hit) 或「停牌」(Stand)</li>
+                    <li><strong>莊家策略：</strong>
+                        <ul>
+                            <li>點數 &lt; 8：必須要牌</li>
+                            <li>點數 ≥ 8：必須停牌</li>
+                        </ul>
+                    </li>
+                    <li><strong>勝負判定：</strong>
+                        <ul>
+                            <li>若任一方爆牌：未爆牌方獲勝</li>
+                            <li>若皆未爆牌：點數較高者獲勝</li>
+                            <li>點數相同：<strong>和局</strong> (Push)</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </details>
+
+        <div class="game-area">
+            <div class="banker-section">
+                <div class="section-title">🎩 莊家 (Banker)</div>
+                <div class="hand" id="bankerHand"></div>
+                <div class="points" id="bankerPoints">點數: ?</div>
+            </div>
+
+            <div class="player-section">
+                <div class="section-title">👤 玩家 (Player)</div>
+                <div class="hand" id="playerHand"></div>
+                <div class="points" id="playerPoints">點數: 0</div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button id="newGameBtn">🎮 新局 (New Game)</button>
+            <button id="hitBtn">🎴 要牌 (Hit)</button>
+            <button id="standBtn">✋ 停牌 (Stand)</button>
+        </div>
+
+        <div class="message-area">
+            <div class="phase" id="phaseMessage">點擊「新局」開始遊戲</div>
+            <div class="result" id="resultMessage"></div>
+            <div class="reason" id="reasonMessage"></div>
+        </div>
+    </div>
+
+    <script>
+        // Card structure
+        const SUITS = ['♠', '♥', '♦', '♣'];
+        const RANKS = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+
+        // Game state
+        let state = {
+            deck: [],
+            playerHand: [],
+            bankerHand: [],
+            phase: 'INIT', // 'INIT', 'PLAYER_TURN', 'BANKER_TURN', 'SETTLED'
+            result: {
+                outcome: null, // 'WIN', 'LOSE', 'PUSH'
+                reason: ''
+            }
+        };
+
+        // Build a standard 52-card deck
+        function buildDeck() {
+            const deck = [];
+            for (const suit of SUITS) {
+                for (const rank of RANKS) {
+                    deck.push({ suit, rank });
+                }
+            }
+            return deck;
+        }
+
+        // Fisher-Yates shuffle
+        function shuffle(deck) {
+            const shuffled = [...deck];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        // Draw a card from deck
+        function draw() {
+            if (state.deck.length === 0) {
+                state.deck = shuffle(buildDeck());
+            }
+            return state.deck.pop();
+        }
+
+        // Calculate card value
+        function cardValue(card) {
+            if (card.rank === 'A') return 1;
+            if (card.rank === 'J' || card.rank === 'Q' || card.rank === 'K') return 0.5;
+            return parseInt(card.rank);
+        }
+
+        // Calculate hand points
+        function handPoints(hand) {
+            return hand.reduce((sum, card) => sum + cardValue(card), 0);
+        }
+
+        // Check if hand is bust
+        function isBust(points) {
+            return points > 10.5;
+        }
+
+        // Start a new round
+        function startRound() {
+            state.deck = shuffle(buildDeck());
+            state.playerHand = [];
+            state.bankerHand = [];
+            state.phase = 'PLAYER_TURN';
+            state.result = { outcome: null, reason: '' };
+
+            // Deal initial cards
+            state.playerHand.push(draw());
+            state.bankerHand.push(draw());
+
+            updateUI();
+            updateButtons();
+        }
+
+        // Player hits
+        function playerHit() {
+            if (state.phase !== 'PLAYER_TURN') return;
+
+            state.playerHand.push(draw());
+            const points = handPoints(state.playerHand);
+
+            if (isBust(points)) {
+                state.phase = 'SETTLED';
+                state.result = {
+                    outcome: 'LOSE',
+                    reason: '玩家爆牌 (Player busts)'
+                };
+            }
+
+            updateUI();
+            updateButtons();
+        }
+
+        // Player stands
+        function playerStand() {
+            if (state.phase !== 'PLAYER_TURN') return;
+
+            state.phase = 'BANKER_TURN';
+            updateUI();
+            updateButtons();
+
+            // Delay banker's action for better UX
+            setTimeout(() => {
+                bankerAutoPlay();
+            }, 500);
+        }
+
+        // Banker auto-play logic
+        function bankerAutoPlay() {
+            if (state.phase !== 'BANKER_TURN') return;
+
+            const drawBankerCard = () => {
+                state.bankerHand.push(draw());
+                updateUI();
+
+                const bankerPts = handPoints(state.bankerHand);
+
+                if (isBust(bankerPts)) {
+                    // Banker busts
+                    state.phase = 'SETTLED';
+                    state.result = {
+                        outcome: 'WIN',
+                        reason: '莊家爆牌 (Banker busts)'
+                    };
+                    updateUI();
+                    updateButtons();
+                } else if (bankerPts < 8) {
+                    // Must hit again
+                    setTimeout(drawBankerCard, 800);
+                } else {
+                    // Banker stands (≥ 8)
+                    settle();
+                }
+            };
+
+            const bankerPts = handPoints(state.bankerHand);
+            if (bankerPts < 8) {
+                setTimeout(drawBankerCard, 800);
+            } else {
+                settle();
+            }
+        }
+
+        // Settle the round
+        function settle() {
+            state.phase = 'SETTLED';
+
+            const playerPts = handPoints(state.playerHand);
+            const bankerPts = handPoints(state.bankerHand);
+
+            if (isBust(playerPts)) {
+                state.result = {
+                    outcome: 'LOSE',
+                    reason: '玩家爆牌 (Player busts)'
+                };
+            } else if (isBust(bankerPts)) {
+                state.result = {
+                    outcome: 'WIN',
+                    reason: '莊家爆牌 (Banker busts)'
+                };
+            } else if (playerPts > bankerPts) {
+                state.result = {
+                    outcome: 'WIN',
+                    reason: `玩家點數較高 (Player: ${playerPts} > Banker: ${bankerPts})`
+                };
+            } else if (playerPts < bankerPts) {
+                state.result = {
+                    outcome: 'LOSE',
+                    reason: `莊家點數較高 (Banker: ${bankerPts} > Player: ${playerPts})`
+                };
+            } else {
+                state.result = {
+                    outcome: 'PUSH',
+                    reason: `點數相同，和局 (Push: ${playerPts})`
+                };
+            }
+
+            updateUI();
+            updateButtons();
+        }
+
+        // Render a card
+        function renderCard(card, hidden = false) {
+            const div = document.createElement('div');
+            div.className = 'card';
+
+            if (hidden) {
+                div.classList.add('hidden');
+                div.textContent = '?';
+            } else {
+                const isRed = card.suit === '♥' || card.suit === '♦';
+                div.classList.add(isRed ? 'red' : 'black');
+
+                const rankDiv = document.createElement('div');
+                rankDiv.className = 'rank';
+                rankDiv.textContent = card.rank;
+
+                const suitDiv = document.createElement('div');
+                suitDiv.className = 'suit';
+                suitDiv.textContent = card.suit;
+
+                div.appendChild(rankDiv);
+                div.appendChild(suitDiv);
+            }
+
+            return div;
+        }
+
+        // Update UI
+        function updateUI() {
+            // Render player hand
+            const playerHandDiv = document.getElementById('playerHand');
+            playerHandDiv.innerHTML = '';
+            state.playerHand.forEach(card => {
+                playerHandDiv.appendChild(renderCard(card));
+            });
+
+            // Render banker hand
+            const bankerHandDiv = document.getElementById('bankerHand');
+            bankerHandDiv.innerHTML = '';
+            state.bankerHand.forEach((card, index) => {
+                // Show first card, hide others during player turn
+                const hidden = state.phase === 'PLAYER_TURN' && index > 0;
+                bankerHandDiv.appendChild(renderCard(card, hidden));
+            });
+
+            // Update points
+            const playerPts = handPoints(state.playerHand);
+            document.getElementById('playerPoints').textContent = `點數: ${playerPts}`;
+
+            const bankerPts = handPoints(state.bankerHand);
+            if (state.phase === 'PLAYER_TURN') {
+                document.getElementById('bankerPoints').textContent = '點數: ?';
+            } else {
+                document.getElementById('bankerPoints').textContent = `點數: ${bankerPts}`;
+            }
+
+            // Update messages
+            const phaseMsg = document.getElementById('phaseMessage');
+            const resultMsg = document.getElementById('resultMessage');
+            const reasonMsg = document.getElementById('reasonMessage');
+
+            if (state.phase === 'PLAYER_TURN') {
+                phaseMsg.textContent = "玩家回合 - 要牌或停牌？ (Player's Turn)";
+                resultMsg.textContent = '';
+                reasonMsg.textContent = '';
+            } else if (state.phase === 'BANKER_TURN') {
+                phaseMsg.textContent = "莊家回合 - 自動行動中... (Banker's Turn)";
+                resultMsg.textContent = '';
+                reasonMsg.textContent = '';
+            } else if (state.phase === 'SETTLED') {
+                phaseMsg.textContent = '本局結束 (Round Settled)';
+                
+                if (state.result.outcome === 'WIN') {
+                    resultMsg.textContent = '🎉 玩家獲勝！(You Win!)';
+                    resultMsg.className = 'result win';
+                } else if (state.result.outcome === 'LOSE') {
+                    resultMsg.textContent = '😢 玩家輸了 (You Lose)';
+                    resultMsg.className = 'result lose';
+                } else if (state.result.outcome === 'PUSH') {
+                    resultMsg.textContent = '🤝 和局 (Push)';
+                    resultMsg.className = 'result push';
+                }
+                
+                reasonMsg.textContent = state.result.reason;
+            } else {
+                phaseMsg.textContent = '點擊「新局」開始遊戲';
+                resultMsg.textContent = '';
+                reasonMsg.textContent = '';
+            }
+        }
+
+        // Update button states
+        function updateButtons() {
+            const hitBtn = document.getElementById('hitBtn');
+            const standBtn = document.getElementById('standBtn');
+
+            if (state.phase === 'PLAYER_TURN') {
+                hitBtn.disabled = false;
+                standBtn.disabled = false;
+            } else {
+                hitBtn.disabled = true;
+                standBtn.disabled = true;
+            }
+        }
+
+        // Event listeners
+        document.getElementById('newGameBtn').addEventListener('click', startRound);
+        document.getElementById('hitBtn').addEventListener('click', playerHit);
+        document.getElementById('standBtn').addEventListener('click', playerStand);
+
+        // Initialize buttons on load
+        updateButtons();
+    </script>
+</body>
+</html>

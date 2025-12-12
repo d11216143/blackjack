@@ -571,11 +571,11 @@
             const reasonMsg = document.getElementById('reasonMessage');
 
             if (state.phase === 'PLAYER_TURN') {
-                phaseMsg.textContent = '玩家回合 - 要牌或停牌？ (Player\'s Turn)';
+                phaseMsg.textContent = "玩家回合 - 要牌或停牌？ (Player's Turn)";
                 resultMsg.textContent = '';
                 reasonMsg.textContent = '';
             } else if (state.phase === 'BANKER_TURN') {
-                phaseMsg.textContent = '莊家回合 - 自動行動中... (Banker\'s Turn)';
+                phaseMsg.textContent = "莊家回合 - 自動行動中... (Banker's Turn)";
                 resultMsg.textContent = '';
                 reasonMsg.textContent = '';
             } else if (state.phase === 'SETTLED') {
